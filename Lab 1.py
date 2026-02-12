@@ -67,3 +67,91 @@ print(f"NumPy array sqrt: {res_array}")
 
 
 #TASK 2
+#without slicing
+def is_double(word): 
+    new_word = ''
+    length = len(word)
+    if length % 2 == 0: 
+        for i in range(length//2): 
+            char = word[i]
+            new_word = new_word + char
+        n = 0
+        is_match = True
+        while n < length//2: 
+            if word[n] != word[length//2 + n]: 
+                is_match = False
+                break
+            n += 1
+        return is_match
+    return False
+is_double('bonbon')  
+
+###basic slicing 
+word = 'hazniy'
+mid = len(word)//2
+print(word[:mid])
+print(word[mid:])
+
+#slicing 
+def is_double(word):
+    length = len(word)
+    
+    # If it's odd, it can't be a perfect double
+    if length % 2 != 0:
+        return False
+    
+    mid = length // 2
+    first_half = word[:mid]
+    second_half = word[mid:]
+    
+    return first_half == second_half
+
+print(is_double('bonbon')) # Returns: True
+print(is_double('apple'))  # Returns: False
+
+#shorter version
+def is_double(word):
+    length = len(word)
+    half = length // 2
+    return length % 2 == 0 and word[:half] == word[half:]
+is_double('bonbon')
+
+###print word for word 
+word_list = ['alia', 'aliu']
+print([word for word in word_list])
+print(*(word for word in word_list)) #unpacking, now in array 
+
+###to split string and add comma 
+def normalize_input(data):
+    # Turns ['a, b', 'c'] or ['a, b, c'] into ['a', 'b', 'c']
+    full_string = " ".join(data).replace(',', ' ')
+    return full_string.split()
+normalize_input(['alia, bonbon, bonbim']) #word by word
+normalize_input('alia, bonbon, bonbim') #by letter
+
+def filter_double(word_list):
+    # This reads like a sentence: "Give me the word for every word 
+    # in the list, but only if is_double(word) is True."
+    return [word for word in word_list if is_double(word)]
+filter_double(['alia', 'bonbon', 'bonbim'])
+
+def filter_double(word_list):
+    # filter() returns an iterator, so we wrap it in list() 
+    # to get a usable list back.
+    return list(filter(is_double, word_list))
+filter_double(['alia', 'bonbon', 'bonbim'])
+
+#this one considering how user input the string too 
+def filter_double(input_list):
+    # Check if the user accidentally passed one long string inside a list
+    if len(input_list) == 1 and ',' in input_list[0]:
+        # Split by comma and strip whitespace from each name
+        input_list = [item.strip() for item in input_list[0].split(',')]
+
+    result = []
+    for word in input_list:
+        if is_double(word): # Assuming this is your logic
+            result.append(word)
+    return result
+filter_double(['alia', 'bonbon', 'bonbim'])
+filter_double(['alia, bonbon, bonbim'])
