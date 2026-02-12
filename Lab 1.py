@@ -1,4 +1,4 @@
-#TASK 1
+#TASK 1 : square roots 
 #accuracy
 def SQRT(x):
     """mathematical concept: 
@@ -177,4 +177,61 @@ def filter_double(input_list):
 filter_double(['alia, bonbon, roro'])
 
 
-#TASK 3
+#TASK 3 : Pisano Periods (sequence always starts with 0,1)
+#For pisano sequence, why 1 % N, what this means?
+#- $%$ equal to remainder 
+
+#What's isinstance()
+#- isinstance(object, type) : checks whether a value belongs to a certain data type (class).
+
+# Pisano periods : the period with which the sequence of Fibonacci numbers modulo N becomes periodic.
+def pisano_sequence(N,n): 
+    """
+    n = number of terms 
+    N = num dividing by to find the remainder / The "ceiling" or divisor. All numbers in your list will be less than N 
+    """
+    if not (isinstance(N, int) and isinstance(n, int) and N > 0 and n > 0): 
+        return False
+    if n == 1: 
+        return [0 % N] #which is 0  
+    
+    seq = [0 % N,1 % N]
+    
+    for i in range(2,n): 
+        next_term = (seq[-1] + seq[-2]) % N
+        seq.append(next_term)
+    return seq
+pisano_sequence(3,4)
+
+def pisano_period(N):
+    """
+    Every Fibonacci sequence modulo N eventually repeats. 
+    Since the next number in a Fibonacci sequence depends only on the previous two, 
+    the sequence "starts over" as soon as we see the pattern 0, 1 again. 
+    Your job is to find how many steps it takes to get back to that 0, 1 start.
+    
+    Returns the period of the Fibonacci sequence modulo N. The period always starts with 0,1 
+    Logic :  Start with F_0 = 0 and F_1 = 1. Calculate F_2, F_3, ... one by one.
+    """
+    # 1. Check if N is a strictly positive integer
+    if not (isinstance(N, int) and N > 0):
+        return False
+    
+    # 2. Special case for N=1
+    if N == 1:
+        return 1
+
+    prev = 0
+    curr = 1
+    period = 0
+    
+    while True:
+        next_term = (prev + curr) % N
+        prev = curr
+        curr = next_term
+        period += 1
+        
+        if prev == 0 and curr == 1:
+            return period
+    
+pisano_period(3)
