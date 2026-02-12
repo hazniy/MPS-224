@@ -155,3 +155,26 @@ def filter_double(input_list):
     return result
 filter_double(['alia', 'bonbon', 'bonbim'])
 filter_double(['alia, bonbon, bonbim'])
+
+#Clean version : 
+def is_double(word):
+    length = len(word)
+    half = length // 2
+    return length % 2 == 0 and word[:half] == word[half:]
+#will return True or False here 
+
+def filter_double(input_list):
+    # Check if the user accidentally passed one long string inside a list
+    if len(input_list) == 1 and ',' in input_list[0]:
+        # Split by comma and strip whitespace from each name
+        input_list = [item.strip() for item in input_list[0].split(',')]
+
+    result = []
+    for word in input_list:
+        if is_double(word): # Assuming this is your logic
+            result.append(word)
+    return result
+filter_double(['alia, bonbon, roro'])
+
+
+#TASK 3
