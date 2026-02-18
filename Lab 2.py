@@ -154,7 +154,25 @@ def a(n,k):
     
     return values[k] 
 
-  
+#or 
+
+import numpy as np
+
+def a(n, k):
+    values = np.zeros(k + 1)
+
+    for i in range(k + 1):
+        if i < n:
+            values[i] = i
+        else:
+            values[i] = np.mean(values[i - n:i]) #from i-n up to i (but not including i
+    return values[k]
+
+values = [0, 1, 2, 1, 4/3]
+print(values[0:3]) #[0, 1, 2]
+
+#np.mean(array) : sum of element/num of elements, average
+
 #Task 4: Matrix exponentials
 #exp(A) = ∑∞k=0 A^k/k!, exactly like normal exponential!
 #but A^0 = I(identity matrix), A^1 = A, A^2 =A@A etc
