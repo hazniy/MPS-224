@@ -37,15 +37,13 @@ def plot_lissajous(n, m):
     x = np.sin(n*t)
     y = np.cos(m*t)
 
-    fig, ax = plt.subplots(figsize=(5, 5))
-
-    ax.plot(x, y,
+    plt.figure(figsize=(5, 5))
+    plt.plot(x, y,
             color='#aa4a44',
             linestyle='--')
-
-    ax.set_xlim(-2, 2)
-    ax.set_ylim(-2, 2)
-    ax.axis('off')
+    plt.xlim(-2, 2)
+    plt.ylim(-2, 2)
+    plt.axis('off')
 
     plt.show()
     
