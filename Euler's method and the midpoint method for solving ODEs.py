@@ -1,3 +1,4 @@
+#solving diff eqn but less accurate 
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.integrate import solve_ivp
@@ -21,6 +22,7 @@ def euler(f, a, b, x0, n = 100):
         xs[i+1] = xs[i] + h * f(ts[i], xs[i])
     return ts, xs
 
+#eulers method, dx/dt = x with x = 1, t = 0, x = e^t
 f0 = lambda t, x: x
 
 plt.figure(figsize=(20, 6))
@@ -32,6 +34,7 @@ for k in range(10,80,10):
     plt.plot(ts, xs, label=f'{k} steps')
 plt.legend()
 
+#midpoint method 
 def midpoint(f, t0, t1, x0, n = 100):
     ts = np.linspace(t0, t1, n+1)
     # If x0 is just a scalar, the line below is equivalent to xs = np.zeros(n+1)
@@ -54,6 +57,7 @@ for k in range(3,15,3):
     plt.plot(ts, xs, label=f'{k} steps')
 plt.legend()
 
+#make it cleare 
 plt.figure(figsize=(20, 6))
 ts = np.linspace(0, 1, 101)
 for k in range(3,24,3):
@@ -61,6 +65,7 @@ for k in range(3,24,3):
     plt.plot(ts, xs - np.exp(ts), label=f'{k} steps')
 plt.legend()
 
+#the limitations of eulers method, this one use second derivatives 
 g = lambda t, u: np.array([u[1], -u[0]])
 
 te, ue = euler(g, 0, 20, np.array([1, 0]), 60)
