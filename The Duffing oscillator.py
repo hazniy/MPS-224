@@ -2,6 +2,8 @@ import numpy as np
 from scipy.integrate import solve_ivp
 import matplotlib.pyplot as plt
 
+#The function solve_ivp() does not deal directly with second-order equations, 
+#but there is a standard way to reformulate them as first-order equations with extra variables.
 def du_dt(t, u):
     return np.array([u[1], 2*u[0] - u[0]**3])
 
