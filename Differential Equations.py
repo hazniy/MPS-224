@@ -1,4 +1,4 @@
-from spicy.integrate 
+from scipy.integrate import solve_ivp
 #1D
 def dxdt(t, x) : 
   return (x*1-x)
