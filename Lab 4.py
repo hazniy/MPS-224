@@ -37,6 +37,7 @@ import numpy as np
 from scipy.integrate import solve_ivp
 
 def cutoff(a):
+    "find solution escapes to  infinity at some finite  time t0<1, cutoff function calculates the cutoff time"
     def dxdt(t, x):
         return x**3
     
