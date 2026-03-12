@@ -64,6 +64,13 @@ ax[0].legend()
 ax[1].legend()
 #identical, f7(x) is close to f6(x) 
 
+#define the Borwein function for a given k 
+def Borwein(k, x): 
+    if k == 1: 
+        return np.sinc(x/np.pi) 
+    else: 
+        return Borwein(k-1, x) * np.snc(x/(2**(k-1)*np.pi)) 
+
 #calculate integarl infnity x=0 f(x) dx
 def I(f):
     """Compute the integral of f from 0 to infinity.
