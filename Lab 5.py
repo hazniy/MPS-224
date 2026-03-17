@@ -113,32 +113,36 @@ disc_int_monomial(2,0)
 disc_int_monomial(3,2)
 
 #Submit Q2
-def extend_disc_rule(u0):
-    """each row (x,y,w,t) in u, the last entry t should be
-    - (x,y) = (0,0), t = 0
-    - xy = 0, t = 1
-    - |x| = |y| > 0, t = 2
-    - else t = 3"""
+import numpy as np
+
+def extend_disc_rule(u0): 
     rows = []
     for x, y, w in u0:
         if x == 0 and y == 0:
-            rows.append([0,0,w,0])
-        elif x*y == 0:
-            pts = [(x,y),(-x,y),(x,-y),(-x,-y)]
-            pts = list(set(pts))
-            for px,py in pts:
-                rows.append([px,py,w,1])
+            rows.append([0, 0, w, 0])
+        
+        elif x * y == 0:
+            pts = [
+                (x,y), (-x,y), (x,-y), (-x,-y),
+                (y,x), (-y,x), (y,-x), (-y,-x)
+            ]
+            pts = list(set(pts))  # remove duplicates
+            for px, py in pts:
+                rows.append([px, py, w, 1])
+        
         elif abs(x) == abs(y):
-            pts = [(x,y),(-x,y),(x,-y),(-x,-y)]
-            for px,py in pts:
-                rows.append([px,py,w,3])
+            pts = [(x,y), (-x,y), (x,-y), (-x,-y)]
+            for px, py in pts:
+                rows.append([px, py, w, 2])
+        
         else:
             pts = [
-                (x,y),(-x,y),(x,-y),(-x,-y),
-                (y,x),(-y,x),(y,-x),(-y,-x)
+                (x,y), (-x,y), (x,-y), (-x,-y),
+                (y,x), (-y,x), (y,-x), (-y,-x)
             ]
-            for px,py in pts:
-                rows.append([px,py,w,2])
+            for px, py in pts:
+                rows.append([px, py, w, 3])
+    
     return np.array(rows)
 
 #Test value 
@@ -262,8 +266,9 @@ def wilkinson_poly(n, epsilon=0):
     p = np.array([1.0]) #1
     for k in range(1, n+1):
         p = np.convolve(p, [1, -k])  #loop multiplies by (x-k) 
-    p[1] = p[1] + epsilon
-    return p
+    eps_poly = np.zeros(n+1)
+    eps_poly[1] = epsilon
+    return p + eps_poly
   
 #Test Value 
 wilkinson_poly(3,0.1)
