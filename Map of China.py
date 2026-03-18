@@ -1,14 +1,22 @@
 import geopandas
 import matplotlib.pyplot as plt
 import re
+import matplotlib.font_manager as fm
 
-# Use a font that supports Chinese characters
-# We could learn how to do this by asking Gemini 
-# "set the default font in matplotlib to one that supports Chinese characters"
-# The SimSun font is present on most Windows systems.  For non-Windows systems, 
-# you might need something else.
-plt.rcParams["font.family"] = "SimSun"
-china = geopandas.read_file('../data/maps/china_provinces.json')
+#chinese character : 
+#go to terminal and enter this : sudo apt update & sudo apt install fonts-noto-cjk, then restart 
+
+plt.rcParams["font.family"] = "Noto Sans CJK SC"
+plt.rcParams['axes.unicode_minus'] = False
+
+font_path = "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc"  # <- YOUR path here
+font_prop = fm.FontProperties(fname=font_path)
+
+plt.figure()
+plt.text(0.5, 0.5, "中国测试", fontproperties=font_prop, fontsize=20)
+plt.show()
+
+china = geopandas.read_file('gadm41_CHN_1.json')
 
 china['label'] = ''
 china['long_name'] = ''
@@ -26,7 +34,7 @@ for idx, x in china.iterrows():
     # 'NingxiaHui' to 'Ningxia Hui'.  In more detail, the regular expression
     # '([A-Z]+)' matches any sequence of capital letters.  The expression r' \1'
     # means "a space followed by the thing that was matched", so it inserts a space
-    # before each capital letter.  In particular it will usually insert a space 
+    # before each capital letter.  In particular it will usually insert a space
     # right at the beginning of the string, so we use strip() to remove it.
     n = re.sub('([A-Z]+)', r' \1', x['NAME_1']).strip()
     # We have some special cases for Hong Kong and Macau
@@ -42,7 +50,7 @@ for idx, x in china.iterrows():
         s = x['NL_NAME_1'].split('|')[-1]
         # Remove the last three characters if they are '自治区'
         # (meaning 'autonomous region').  Chinese-speaking students can comment
-        # on whether it would be appropriate to remove '族' as well leaving 
+        # on whether it would be appropriate to remove '族' as well leaving
         # '宁夏回' instead of '宁夏回族' and '广西壮' instead of '广西壮族'.
         if s[-3:] == '自治区':
             s = s[:-3]
@@ -53,14 +61,14 @@ for idx, x in china.iterrows():
         elif x['ENGTYPE_1'] == 'AutonomousRegion':
             n = 'the ' + n + ' Autonomous Region '
     if s in labels:
-        # If we get here, then the relevant region has several pieces, and we 
-        # already have a label for the first piece.  Subsequent pieces are 
+        # If we get here, then the relevant region has several pieces, and we
+        # already have a label for the first piece.  Subsequent pieces are
         # always much smaller and we do not label them.
         s = ''
     else:
         labels.append(s)
     # Note that slightly strange syntax is needed to assign to a cell in a
-    # dataframe.  
+    # dataframe.
     china.at[idx, 'label'] = s
     china.at[idx, 'long_name'] = n
 
@@ -90,12 +98,23 @@ def show_region(region):
         raise ValueError(f'No region named {region}')
     fig, ax = plt.subplots(1, 1, figsize=(20, 10))
     ax.axis('off')
-    ax.set_title('Map of China with ' + r['long_name'].values[0] + ' (' + r['label'].values[0] + ') highlighted')
+    ax.set_title(
+    'Map of China with ' + r['long_name'].values[0] + ' (' + r['label'].values[0] + ') highlighted',
+    fontproperties=font_prop
+)
     # Plot all the regions in light grey
     china.plot(edgecolor='darkgrey', facecolor='lightgrey', ax=ax)
     # Plot the selected region in light blue
     r.plot(facecolor='#9999ff', ax=ax)
     # Add text labels to all regions
-    china.apply(lambda x: ax.annotate(text=x['label'], xy=x['label_pos'], ha='center'), axis=1)
+    china.apply(
+    lambda x: ax.annotate(
+        text=x['label'],
+        xy=x['label_pos'],
+        ha='center',
+        fontproperties=font_prop   # 🔥 THIS LINE FIXES IT
+    ),
+    axis=1
+)
 
 show_region('Heilongjiang')
