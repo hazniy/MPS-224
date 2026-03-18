@@ -27,6 +27,31 @@ create_spreadsheet(
     ['Cheddar', 'Wensleydale', 'Stilton']
 )
 
+#submit
+def create_spreadsheet(filename, strings):
+    """
+    Creates and saves an Excel spreadsheet containing a list of strings and their lengths.
+
+    The spreadsheet will have two columns: "String" and "Length". Each row contains
+    a string from the input list and its corresponding length. A final row is added
+    with the label "Total" and a formula that calculates the sum of all string lengths.
+
+    Parameters:
+        filename (str): The name of the Excel file to be created (must end with .xlsx).
+        strings (list of str): A list of strings to include in the spreadsheet.
+    """
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws['A1'] = "String"
+    ws['B1'] = "Length"
+    for i, s in enumerate(strings, start=2):
+        ws[f'A{i}'] = s
+        ws[f'B{i}'] = len(s)
+    total_row = len(strings) + 2
+    ws[f'A{total_row}'] = "Total"
+    ws[f'B{total_row}'] = f"=SUM(B2:B{total_row - 1})"
+    wb.save(filename)
+
 #Task 2
 from PIL import Image
 from IPython.display import display
