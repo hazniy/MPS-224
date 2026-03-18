@@ -1,3 +1,6 @@
+import sys
+!{sys.executable} -m pip install python-docx
+
 from docx import Document # pip install python-docx
 # You may need to modify this line to point to the directory where you have your Word files.
 data_dir = '../data/office/'
