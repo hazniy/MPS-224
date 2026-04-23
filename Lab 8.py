@@ -238,3 +238,32 @@ def p(t, *a):
     return result
 #Task 3: Spurious correlations 
 #Task 4: Fruit and vegetables 
+
+#in class#Pandas basic 
+import numpy as np
+import pandas as pd 
+
+#first example : earthquake
+df = pd.read_csv('seismic_events.csv') #raed the dataframe 
+df['Mag'] #read one column only 
+df.describe() #summary of the data - mean, sd, etc 
+df[df['Mag'] > 2 ] #stronger, highest, filter it to rows that we interested in, the inner is the mask (conditional), outer it filtered 
+df['Mag'].hist(bina=20) #histogram, of column 
+?df.hist() #to ask the properties 
+
+#second example : popular names (compare 2 dataframes hence we use merge)
+#read data files 
+df1904 = pd.read_csv('')
+df2019 = pd.read_csv('') 
+#clean data 
+#lower case, uppercase first only 
+df['Name'] = df['Name'].str.capitalize 
+#merge 2 tables 
+pd.merge(df,df,on='Name',how='inner') #inner only have same both 
+
+#third example 
+#read -> sort -> filter -> query -> plot 
+
+#fit models to data (linear regression - use formula)
+#how to find best fit parameters 
+#linear models & non linear models 
