@@ -1,3 +1,4 @@
+#Synthetic signals
 import numpy as np
 import scipy.fft as fft
 import matplotlib.pyplot as plt
@@ -197,3 +198,7 @@ for i, f in enumerate(functions):
 
 plt.tight_layout()
 plt.show()
+
+#Task 2: Electrocardiograms 
+
+#Task 3: Birdsong 
