@@ -200,5 +200,177 @@ plt.tight_layout()
 plt.show()
 
 #Task 2: Electrocardiograms 
+#read types.txt and allow access by both index and code 
+def make_ecg_dict():
+    ecg_dict = {}
+    
+    with open('/content/ecg/types.txt', 'r') as f:
+        for line in f:
+            parts = line.strip().split(',')
+            index = int(parts[0])
+            code = parts[1]
+            full_name = parts[2]
+            
+            entry = (index, code, full_name)
+            
+            ecg_dict[index] = entry
+            ecg_dict[code] = entry
+    
+    return ecg_dict
+
+
+# create dictionary
+ecg_dict = make_ecg_dict()
+
+#extract .mat data 
+import scipy.io
+
+mat = scipy.io.loadmat('/content/ecg/AFIB' + '.mat')
+data = mat['val'].squeeze()
+
+import numpy as np
+import scipy.io
+
+def get_ecg_data(n):
+    index, code, full_name = ecg_dict[n]
+    
+    mat = scipy.io.loadmat('/content/ecg/' + code + '.mat')
+    
+    # extract signal
+    data = mat['val'].squeeze()
+    
+    return (index, code, full_name, data)
+
+#normalise + plot + find peaks
+import matplotlib.pyplot as plt
+import scipy.signal
+
+index, code, full_name, x = get_ecg_data('AFIB')
+
+# normalise
+x = (x - np.mean(x)) / np.std(x)
+
+# time axis (360 Hz)
+t = np.arange(len(x)) / 360
+
+# find peaks (tune parameters if needed)
+peaks, _ = scipy.signal.find_peaks(x, height=0.5, distance=100)
+
+plt.figure(figsize=(12,4))
+plt.plot(t, x)
+plt.scatter(t[peaks], x[peaks], color='red')
+plt.title(full_name)
+plt.xlabel('Time (s)')
+plt.show()
+
+# average spacing
+spacing = np.diff(peaks) / 360
+print("Average peak spacing (seconds):", np.mean(spacing))
+
+#high pass filter 
+filter = scipy.signal.butter(4, 0.2, 'high', output='sos')
+x_filtered = scipy.signal.sosfilt(filter, x)
+
+# discard first 2 seconds
+x_filtered = x_filtered[2*360:]
+t_filtered = np.arange(len(x_filtered)) / 360
+
+plt.figure(figsize=(12,4))
+plt.plot(t_filtered, x_filtered)
+plt.title('High-pass filtered')
+plt.show()
+
+#power spectrum (periodogram)
+fs, ps = scipy.signal.periodogram(x, fs=360)
+
+# keep frequencies ≤ 50 Hz
+mask = fs <= 50
+fs = fs[mask]
+ps = ps[mask]
+
+plt.figure(figsize=(12,4))
+plt.plot(fs, ps)
+plt.title('Power spectrum')
+plt.xlabel('Frequency (Hz)')
+plt.show()
+
+def show_ecg(n):
+    index, code, full_name, x = get_ecg_data(n)
+    
+    # normalise
+    x = (x - np.mean(x)) / np.std(x)
+    t = np.arange(len(x)) / 360
+    
+    # peaks
+    peaks, _ = scipy.signal.find_peaks(x, height=0.5, distance=100)
+    
+    # high-pass filter
+    filter = scipy.signal.butter(4, 0.2, 'high', output='sos')
+    x_filtered = scipy.signal.sosfilt(filter, x)
+    
+    # discard first 2 seconds
+    x_filtered = x_filtered[2*360:]
+    t_filtered = np.arange(len(x_filtered)) / 360
+    
+    # periodogram
+    fs, ps = scipy.signal.periodogram(x, fs=360)
+    mask = fs <= 50
+    fs = fs[mask]
+    ps = ps[mask]
+    
+    # plotting
+    fig, ax = plt.subplots(1, 3, figsize=(12,4))
+    
+    # original + peaks
+    ax[0].plot(t, x)
+    ax[0].scatter(t[peaks], x[peaks], color='red')
+    ax[0].set_title(full_name)
+    ax[0].set_xlabel('Time (s)')
+    
+    # filtered
+    ax[1].plot(t_filtered, x_filtered)
+    ax[1].set_title('High-pass filtered')
+    
+    # power spectrum
+    ax[2].plot(fs, ps)
+    ax[2].set_title('Power spectrum')
+    ax[2].set_xlabel('Frequency (Hz)')
+    
+    plt.tight_layout()
+    plt.show()
+
+#Q4 
+def make_ecg_dict():
+    """
+    Reads the file 'types.txt' and returns a dictionary mapping both
+    index numbers and codes to tuples of the form: (index, code, full_name).
+    """
+    ecg_dict = {}
+    
+    with open('types.txt', 'r') as f:
+        for line in f:
+            parts = line.strip().split(',')
+            index = int(parts[0])
+            code = parts[1]
+            full_name = parts[2]
+            
+            entry = (index, code, full_name)
+            
+            ecg_dict[index] = entry
+            ecg_dict[code] = entry
+    
+    return ecg_dict
+
+#Q5 
+def get_ecg_data(n):
+    """
+    Returns ECG data corresponding to the given index or code.
+    """
+    index, code, full_name = ecg_dict[n]
+    
+    mat = scipy.io.loadmat(code + '.mat')
+    data = mat['val'].squeeze()
+    
+    return (index, code, full_name, data)
 
 #Task 3: Birdsong 
